@@ -58,11 +58,21 @@ All data is stored in memory using JavaFX `ObservableList` collections — no da
 
 ---
 
+
 ## Screenshots
 
-| Dashboard | Room Management | Booking & Checkout |
-|-----------|----------------|-------------------|
-| ![Dashboard](screenshots/dashboard.png) | ![Rooms](screenshots/rooms.png) | ![Booking](screenshots/booking.png) |
+<table>
+  <tr>
+    <th>Dashboard</th>
+    <th>Room Management</th>
+    <th>Booking & Checkout</th>
+  </tr>
+  <tr>
+    <td><img src="screenshots/dashboard.png" width="300"/></td>
+    <td><img src="screenshots/rooms.png" width="300"/></td>
+    <td><img src="screenshots/booking.png" width="300"/></td>
+  </tr>
+</table>
 
 ---
 
