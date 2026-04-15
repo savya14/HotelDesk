@@ -350,12 +350,12 @@ Room.setAvailable(false)
     ↓
 ObservableList fires UPDATE event (via Extractor)
     ↓
-┌─────────────────────────────┐
-│ RoomView TableView refreshes │ (status badge: green → red)
+┌───────────────────────────────┐
+│ RoomView TableView refreshes  │ (status badge: green → red)
 │ CustomerView updates          │ (assigned room column)
 │ DashboardView updates         │ (Available -1, Occupied +1)
 │ BookingView room list updates │ (room removed from dropdown)
-└─────────────────────────────┘
+└───────────────────────────────┘
 ```
 
 ---
