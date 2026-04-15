@@ -60,11 +60,9 @@ All data is stored in memory using JavaFX `ObservableList` collections — no da
 
 ## Screenshots
 
-> _Add your own screenshots here after running the app._
-
 | Dashboard | Room Management | Booking & Checkout |
 |-----------|----------------|-------------------|
-| _(screenshot)_ | _(screenshot)_ | _(screenshot)_ |
+| ![Dashboard](screenshots/dashboard.png) | ![Rooms](screenshots/rooms.png) | ![Booking](screenshots/booking.png) |
 
 ---
 
