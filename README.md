@@ -19,6 +19,7 @@
 - [Getting Started](#getting-started)
 - [How to Use](#how-to-use)
 - [Architecture](#architecture)
+- [Data Flow](#data-flow)
 - [Contributing](#contributing)
 
 ---
@@ -68,7 +69,6 @@ All data is stored in memory using JavaFX `ObservableList` collections — no da
 - Five live metric cards: Total Rooms, Available, Occupied, Active Bookings, Revenue
 - **Occupancy Pie Chart** — Available vs Occupied (green/red)
 - **Room Types Pie Chart** — Single / Double / Deluxe distribution
-- **Bookings Bar Chart** — booking count per room type
 - All charts and numbers update in real time via `ListChangeListener`
 - No manual refresh needed
 
@@ -138,7 +138,7 @@ src/main/java/com/hotel/hoteldesk/
 │   └── BookingManager.java       # book() + checkout() logic, revenue tracking
 │
 └── view/
-    ├── DashboardView.java        # Metric cards + Pie Charts + Bar Chart
+    ├── DashboardView.java        # Metric cards + Pie Charts
     ├── RoomView.java             # Add/Edit/Delete/Maintenance + filtered table
     ├── CustomerView.java         # Registration + search + delete + occupancy
     ├── BookingView.java          # Book + checkout + date pickers + search
@@ -219,7 +219,7 @@ The app launches with **6 pre-loaded sample rooms** so you can test immediately.
 4. Room is automatically released back to Available
 
 ### View Dashboard
-Switch to the **Dashboard** tab — all stats, pie charts, and bar chart update live.
+Switch to the **Dashboard** tab — all stats and pie charts update live.
 
 ### Export History
 1. Go to the **History** tab
@@ -240,18 +240,18 @@ The app follows a clean three-layer architecture:
 
 ```
 ┌─────────────────────────────────────────────────┐
-│              PRESENTATION LAYER                 │
-│  DashboardView, RoomView, CustomerView,         │
-│  BookingView, HistoryView                       │
-│  (JavaFX controls — no business logic)          │
+│              PRESENTATION LAYER                  │
+│  DashboardView, RoomView, CustomerView,          │
+│  BookingView, HistoryView                        │
+│  (JavaFX controls — no business logic)           │
 ├─────────────────────────────────────────────────┤
-│             BUSINESS LOGIC LAYER                │
-│  RoomManager, CustomerManager, BookingManager   │
-│  (Own ObservableLists, enforce all invariants)  │
+│             BUSINESS LOGIC LAYER                 │
+│  RoomManager, CustomerManager, BookingManager    │
+│  (Own ObservableLists, enforce all invariants)   │
 ├─────────────────────────────────────────────────┤
-│                DATA LAYER                       │
-│  Room, Customer, Booking, RoomType              │
-│  (POJOs with JavaFX properties for binding)     │
+│                DATA LAYER                        │
+│  Room, Customer, Booking, RoomType               │
+│  (POJOs with JavaFX properties for binding)      │
 └─────────────────────────────────────────────────┘
 ```
 
@@ -278,13 +278,95 @@ This tells JavaFX to fire a list `UPDATE` event whenever a room's `available` or
 
 ---
 
+## Data Flow
+
+The following diagram shows how data flows through the application — from user interaction to storage and back to the UI:
+
+```mermaid
+flowchart LR
+
+  %% User Interaction
+  U["👤 User<br/>(Front Desk Staff)"] --> UI["🖥️ JavaFX UI<br/>(Views)"]
+
+  %% Views Layer
+  UI --> RV["🛏️ RoomView"]
+  UI --> CV["👤 CustomerView"]
+  UI --> BV["📋 BookingView"]
+  UI --> DV["📊 DashboardView"]
+  UI --> HV["📜 HistoryView"]
+
+  %% Managers (Business Logic)
+  RV --> RM["RoomManager"]
+  CV --> CM["CustomerManager"]
+  BV --> BM["BookingManager"]
+  DV --> BM
+  HV --> BM
+
+  %% Data Layer
+  RM <--> R["Room Model"]
+  CM <--> C["Customer Model"]
+  BM <--> B["Booking Model"]
+
+  %% Core Data Storage
+  R --> OBS["📦 ObservableList<br/>(In-Memory Storage)"]
+  C --> OBS
+  B --> OBS
+
+  %% Reactive Updates
+  OBS -->|"🔄 Auto Refresh"| UI
+
+  %% Booking Flow
+  C -->|"Select Customer"| BM
+  R -->|"Select Room"| BM
+  BM -->|"Create Booking"| B
+  BM -->|"Checkout + Bill"| HV
+
+  %% Dashboard Metrics
+  B -->|"Live Stats"| DV
+  R -->|"Room Counts"| DV
+
+  %% History & Analytics
+  B -->|"Checked-out Records"| HV
+  HV -->|"Export"| FILES["📁 Files<br/>(.csv / .txt)"]
+```
+
+### How the Data Flow Works
+
+| Step | Action | What Happens |
+|------|--------|-------------|
+| 1 | User opens app | `Main.java` creates Managers and Views, loads 6 sample rooms |
+| 2 | User adds a room | `RoomView` → `RoomManager.addRoom()` → Room added to `ObservableList` → Table auto-updates |
+| 3 | User registers customer | `CustomerView` → `CustomerManager.addCustomer()` → Customer added to list → Table refreshes |
+| 4 | User books a room | `BookingView` → `BookingManager.book()` → Room marked occupied → Customer assigned room → Booking created → Dashboard updates |
+| 5 | User checks out | `BookingView` → `BookingManager.checkout()` → Bill computed → Room released → Revenue updated → History table populated |
+| 6 | User views dashboard | `DashboardView` reads from `ObservableList` via `ListChangeListener` → All metrics and charts update automatically |
+| 7 | User exports history | `HistoryView` → `PrintWriter` writes `FilteredList` data to `.csv` file |
+| 8 | User generates receipt | `HistoryView` → Formatted `StringBuilder` → Displayed in `TextArea` → Saved as `.txt` via `FileChooser` |
+
+### Reactive Update Chain
+
+```
+Room.setAvailable(false)
+    ↓
+ObservableList fires UPDATE event (via Extractor)
+    ↓
+┌─────────────────────────────┐
+│ RoomView TableView refreshes │ (status badge: green → red)
+│ CustomerView updates          │ (assigned room column)
+│ DashboardView updates         │ (Available -1, Occupied +1)
+│ BookingView room list updates │ (room removed from dropdown)
+└─────────────────────────────┘
+```
+
+---
+
 ## Key Technical Highlights
 
 - **Zero third-party dependencies** — only JavaFX SDK
 - **Reactive UI** — all views update automatically via observable bindings
 - **Input validation** — digits-only fields, 10-char phone limit, date constraints
 - **3 room states** — Available (green), Occupied (red), Maintenance (orange)
-- **Smart ComboBoxes** — custom ListCell + ButtonCell prevent blank display
+- **Smart ComboBoxes** — custom `StringConverter` + `ListCell` prevent blank display
 - **Layered FilteredList** — search filters on top of status filters
 - **DatePicker constraints** — past dates disabled, auto-adjustment
 - **Monospaced receipt** — Courier New formatted invoice with consistent alignment
