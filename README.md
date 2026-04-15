@@ -240,18 +240,18 @@ The app follows a clean three-layer architecture:
 
 ```
 ┌─────────────────────────────────────────────────┐
-│              PRESENTATION LAYER                  │
-│  DashboardView, RoomView, CustomerView,          │
-│  BookingView, HistoryView                        │
-│  (JavaFX controls — no business logic)           │
+│              PRESENTATION LAYER                 │
+│  DashboardView, RoomView, CustomerView,         │
+│  BookingView, HistoryView                       │
+│  (JavaFX controls — no business logic)          │
 ├─────────────────────────────────────────────────┤
-│             BUSINESS LOGIC LAYER                 │
-│  RoomManager, CustomerManager, BookingManager    │
-│  (Own ObservableLists, enforce all invariants)   │
+│             BUSINESS LOGIC LAYER                │
+│  RoomManager, CustomerManager, BookingManager   │
+│  (Own ObservableLists, enforce all invariants)  │
 ├─────────────────────────────────────────────────┤
-│                DATA LAYER                        │
-│  Room, Customer, Booking, RoomType               │
-│  (POJOs with JavaFX properties for binding)      │
+│                DATA LAYER                       │
+│  Room, Customer, Booking, RoomType              │
+│  (POJOs with JavaFX properties for binding)     │
 └─────────────────────────────────────────────────┘
 ```
 
