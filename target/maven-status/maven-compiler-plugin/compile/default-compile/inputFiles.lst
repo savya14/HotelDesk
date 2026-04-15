@@ -1,0 +1,14 @@
+/Users/savyaraj/Desktop/HotelDesk-main/src/main/java/com/hotel/hoteldesk/Main.java
+/Users/savyaraj/Desktop/HotelDesk-main/src/main/java/com/hotel/hoteldesk/manager/BookingManager.java
+/Users/savyaraj/Desktop/HotelDesk-main/src/main/java/com/hotel/hoteldesk/manager/CustomerManager.java
+/Users/savyaraj/Desktop/HotelDesk-main/src/main/java/com/hotel/hoteldesk/manager/RoomManager.java
+/Users/savyaraj/Desktop/HotelDesk-main/src/main/java/com/hotel/hoteldesk/model/Booking.java
+/Users/savyaraj/Desktop/HotelDesk-main/src/main/java/com/hotel/hoteldesk/model/Customer.java
+/Users/savyaraj/Desktop/HotelDesk-main/src/main/java/com/hotel/hoteldesk/model/Room.java
+/Users/savyaraj/Desktop/HotelDesk-main/src/main/java/com/hotel/hoteldesk/model/RoomType.java
+/Users/savyaraj/Desktop/HotelDesk-main/src/main/java/com/hotel/hoteldesk/view/BookingView.java
+/Users/savyaraj/Desktop/HotelDesk-main/src/main/java/com/hotel/hoteldesk/view/CustomerView.java
+/Users/savyaraj/Desktop/HotelDesk-main/src/main/java/com/hotel/hoteldesk/view/DashboardView.java
+/Users/savyaraj/Desktop/HotelDesk-main/src/main/java/com/hotel/hoteldesk/view/HistoryView.java
+/Users/savyaraj/Desktop/HotelDesk-main/src/main/java/com/hotel/hoteldesk/view/RoomView.java
+/Users/savyaraj/Desktop/HotelDesk-main/src/main/java/module-info.java
